@@ -14,6 +14,7 @@
    #:ninth
    #:tenth
 
+   #:rest
    #:append
    #:push
    #:pushnew
@@ -35,6 +36,25 @@
     (is (equal #\B (second (first box)))))
   (signals type-error
     (first (make-array '(10 10)))))
+
+(test rest-test
+  (let ((tail '(2 3 . 4)))
+    (is (eq tail (rest (cons 1 tail))))
+    (let ((seq (list 1 2 3 4)))
+      (setf (rest seq) tail)
+      (is (eq tail (rest seq)))))
+  (let ((seq (vector 1 2 3)))
+    (is (equalp #(4 5) (setf (rest seq) #(4 5))))
+    (is (equalp #(4 5) (rest seq)))
+    (is (equalp #(1 4 5) seq)))
+  (let ((seq (make-array 3 :initial-contents '(1 2 3) :adjustable t)))
+    (is (equalp #(2 3 4 5) (setf (rest seq) #(2 3 4 5))))
+    (is (equalp #(2 3 4 5) (rest seq)))
+    (is (equalp #(1 2 3 4 5) seq)))
+  (let ((seq "wait"))
+    (is (equal "ait" (rest seq)))
+    (is (equal "hat" (setf (rest seq) "hat")))
+    (is (equal "what" seq))))
 
 (test append-test
   (is (equal '() (append)))

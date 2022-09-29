@@ -11,6 +11,7 @@
            #:ninth
            #:tenth
 
+           #:rest
            #:append
            #:push
            #:pushnew
@@ -26,6 +27,7 @@
            #:ninth
            #:tenth
 
+           #:rest
            #:append
            #:push
            #:pushnew
@@ -63,6 +65,27 @@
   eighth
   ninth
   tenth)
+
+(defun rest (seq)
+  (etypecase seq
+    (vector
+     (subseq seq 1))
+    (list
+     (cdr seq))))
+
+(defun set-rest (seq new-rest)
+  (etypecase seq
+    (vector
+     (unless (= (length seq) (1+ (length new-rest)))
+       (if (adjustable-array-p seq)
+           (adjust-array seq (1+ (length new-rest)))
+           (error "Not adjustable seq")))
+     (setf (subseq seq 1) new-rest)
+     new-rest)
+    (list
+     (setf (cl:rest seq) new-rest))))
+
+(defsetf rest set-rest)
 
 (defun append-as-list (seqs)
   (let* ((head (list nil))
