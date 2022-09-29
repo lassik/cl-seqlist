@@ -14,6 +14,7 @@
    #:ninth
    #:tenth
 
+   #:append
    #:push
    #:pushnew
    #:pop))
@@ -34,6 +35,27 @@
     (is (equal #\B (second (first box)))))
   (signals type-error
     (first (make-array '(10 10)))))
+
+(test append-test
+  (is (equal '() (append)))
+  (is (equal '(1 2 3 4 5) (append '(1 2 3) '(4 5))))
+  (is (equal '(1 2 3 4 5) (append '() '(1 2 3) '() '(4 5) '())))
+  (is (equal '(1 2 3 4 5) (append '() '(1 2 3) #() #(4 5) "")))
+  (is (equalp #(1 2 3 4 5) (append #() '(1 2 3) #() #(4 5) "")))
+  (is (equal "abcdef" (append "abc" "def")))
+  (signals type-error (append "123" '(4 5)))
+  (is (equal '(1 2 3 1 2 3 #\1 #\2 #\3) (append '(1 2 3) #(1 2 3) "123")))
+  (is (equal "aabbccdd" (append "aa" "bb" #(#\c #\c) '(#\d #\d)))))
+
+(test append-dotted-list-test
+  (let ((tail '(3 4 . 5)))
+    (is (eq tail (nthcdr 2 (append '(1 2) tail)))))
+  (let ((tail 'what))
+    (is (eq 'what (nthcdr 2 (append '(1 2) tail)))))
+  (is (equal '(1 2 3 4 . 5) (append '(1 2) '(3 4) 5)))
+  (is (equal '(1 2 3 4 . 5) (append '(1 2) '(3 4 . 5))))
+  (signals type-error (append '(1 2) '(3 4 . 5) '()))
+  (signals type-error (append #(1 2) '(3 4 . 5))))
 
 (test push-pushnew-pop
   (let ((seq '()))

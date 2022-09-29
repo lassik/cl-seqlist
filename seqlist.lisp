@@ -11,6 +11,7 @@
            #:ninth
            #:tenth
 
+           #:append
            #:push
            #:pushnew
            #:pop)
@@ -25,6 +26,7 @@
            #:ninth
            #:tenth
 
+           #:append
            #:push
            #:pushnew
            #:pop))
@@ -61,6 +63,34 @@
   eighth
   ninth
   tenth)
+
+(defun append-as-list (seqs)
+  (let* ((head (list nil))
+         (tail head))
+    (do ((seqs seqs (cdr seqs)))
+        ((endp seqs)
+         (cdr head))
+      (let ((seq (car seqs)))
+        (cond ((vectorp seq)
+               (dotimes (i (length seq))
+                 (setf tail (setf (cdr tail) (list (elt seq i))))))
+              ((endp (cdr seqs))
+               ;; This case is needed to retain identical behavior
+               ;; with CL append, which doesn't copy the last list.
+               (setf (cdr tail) seq))
+              (t
+               (dolist (elt seq)
+                 (setf tail (setf (cdr tail) (list elt))))))))))
+
+(defun append (&rest seqs)
+  (cond ((cl:null seqs)
+         '())
+        ((listp (cl:first seqs))
+         (append-as-list seqs))
+        (t
+         (apply #'concatenate
+                `(vector ,(array-element-type (cl:first seqs)))
+                seqs))))
 
 (defmacro push (elem place &environment env)
   (multiple-value-bind (temp-vars temps place-vars set-place get-place)
