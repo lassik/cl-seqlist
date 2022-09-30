@@ -1,6 +1,7 @@
 (defpackage #:seqlist
   (:use #:cl)
-  (:shadow #:first
+  (:shadow #:null
+           #:first
            #:second
            #:third
            #:fourth
@@ -10,13 +11,13 @@
            #:eighth
            #:ninth
            #:tenth
-
            #:rest
            #:append
            #:push
            #:pushnew
            #:pop)
-  (:export #:first
+  (:export #:null
+           #:first
            #:second
            #:third
            #:fourth
@@ -26,7 +27,6 @@
            #:eighth
            #:ninth
            #:tenth
-
            #:rest
            #:append
            #:push
@@ -34,6 +34,11 @@
            #:pop))
 
 (in-package #:seqlist)
+
+(defun null (seq)
+  (or (cl:null seq)
+      (and (vectorp seq)
+           (zerop (length seq)))))
 
 (defmacro define-nth-accessors (&rest names)
   (let ((seq (gensym "SEQ-"))

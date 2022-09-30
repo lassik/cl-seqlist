@@ -3,6 +3,7 @@
   (:shadowing-import-from
    #:seqlist
 
+   #:null
    #:first
    #:second
    #:third
@@ -13,7 +14,6 @@
    #:eighth
    #:ninth
    #:tenth
-
    #:rest
    #:append
    #:push
@@ -21,6 +21,21 @@
    #:pop))
 
 (in-package #:seqlist-tests)
+
+(test null-test
+  (is (eql t (null '())))
+  (is (eql t (null #())))
+  (is (eql t (null #*)))
+  (is (eql t (null "")))
+  (is (eql t (null (make-array 0))))
+  ;;
+  (is (eql nil (null (make-array '()))))
+  (is (eql nil (null (make-array '(0 0)))))
+  (is (eql nil (null '(1))))
+  (is (eql nil (null '(1 . 2))))
+  (is (eql nil (null #(0))))
+  (is (eql nil (null " ")))
+  (is (eql nil (null #*0))))
 
 (test nth-accessors
   (let* ((seq (copy-seq "abc"))
