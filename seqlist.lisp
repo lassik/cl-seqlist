@@ -161,5 +161,5 @@
          (prog1 (if (vectorp ,place-var)
                     (vector-pop ,place-var)
                     (prog1 (car ,place-var)
-                      (setf ,place-var (cdr ,place-var))))
+                           (setf ,place-var (cdr ,place-var))))
                 ,set-place)))))
