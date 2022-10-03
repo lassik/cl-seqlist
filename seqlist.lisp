@@ -12,6 +12,7 @@
            #:ninth
            #:tenth
            #:rest
+           #:butlast
            #:append
            #:push
            #:pushnew
@@ -28,6 +29,7 @@
            #:ninth
            #:tenth
            #:rest
+           #:butlast
            #:append
            #:push
            #:pushnew
@@ -91,6 +93,14 @@
      (setf (cl:rest seq) new-rest))))
 
 (defsetf rest set-rest)
+
+(defun butlast (seq &optional (n 1))
+  (etypecase seq
+    (vector
+     (check-type n (integer 0))
+     (subseq seq 0 (max 0 (- (length seq) n))))
+    (list
+     (cl:butlast seq n))))
 
 (defun append-as-list (seqs)
   (let* ((head (list nil))

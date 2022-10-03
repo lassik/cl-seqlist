@@ -15,6 +15,7 @@
    #:ninth
    #:tenth
    #:rest
+   #:butlast
    #:append
    #:push
    #:pushnew
@@ -70,6 +71,24 @@
     (is (equal "ait" (rest seq)))
     (is (equal "hat" (setf (rest seq) "hat")))
     (is (equal "what" seq))))
+
+(test butlast-test
+  (is (equal '() (butlast '())))
+  (is (equal '() (butlast '(1))))
+  (is (equal '(1) (butlast '(1 2))))
+  (is (equal '(1 2) (butlast '(1 2 3 4 5) 3)))
+  ;;
+  (is (equalp #() (butlast #())))
+  (is (equalp #() (butlast #(1))))
+  (is (equalp #(1) (butlast #(1 2))))
+  (is (equalp #(1 2) (butlast #(1 2 3 4 5) 3)))
+  ;;
+  (is (equal "" (butlast "")))
+  (is (equal "" (butlast "1")))
+  (is (equal "1" (butlast "12")))
+  (is (equal "12" (butlast "12345" 3)))
+  ;;
+  (signals type-error (butlast '() -1)))
 
 (test append-test
   (is (equal '() (append)))
